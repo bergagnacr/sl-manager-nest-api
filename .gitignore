@@ -105,6 +105,3 @@ dist
 
 # SO
 .DS_Store
-
-#npm
-.npmrc
