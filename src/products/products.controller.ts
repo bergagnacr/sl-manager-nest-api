@@ -20,7 +20,7 @@ export class ProductsController {
     return 'GetProducts';
   }
 
-  @Post(':provider/upx`load/')
+  @Post(':provider/upload/')
   @UseInterceptors(FileInterceptor('file'))
   async uploadExcelFile(
     @Param('provider')
