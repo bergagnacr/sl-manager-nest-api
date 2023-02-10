@@ -35,6 +35,6 @@ export class ProductsController {
     file: Express.Multer.File,
     @Param() params,
   ) {
-    return this.productService.readExcel(file, params.provider);
+    return this.productService.readExcelAndReturnObject(file, params.provider);
   }
 }
