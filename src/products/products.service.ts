@@ -35,10 +35,18 @@ export class ProductsService {
         index <= totalCell
       ) {
         const code = evaluateValue(
-          dataFromSheet[`${providersRows[provider].rows[0] + index}`]?.v,
+          dataFromSheet[
+            `${
+              providersRows[provider].rows[provider === 'artec' ? 1 : 0] + index
+            }`
+          ]?.v,
         );
         const description = evaluateValue(
-          dataFromSheet[`${providersRows[provider].rows[1] + index}`]?.v,
+          dataFromSheet[
+            `${
+              providersRows[provider].rows[provider === 'artec' ? 0 : 1] + index
+            }`
+          ]?.v,
         );
         const price = evaluateValue(
           dataFromSheet[`${providersRows[provider].rows[2] + index}`]?.v,
