@@ -4,3 +4,11 @@ export interface providerDataType {
   description: string | '';
   price: number | null;
 }
+
+export type providerType =
+  | 'montenegro2'
+  | 'montenegro3'
+  | 'artec'
+  | 'tolken'
+  | 'newplenty'
+  | 'easa';

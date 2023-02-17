@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { read, IWorkBook } from 'ts-xlsx';
-import { providerDataType } from './types';
+import { providerDataType, providerType } from './types';
 import { providersRows } from './config';
 
 @Injectable()
 export class ProductsService {
   async readExcelAndReturnObject(
     excel: Express.Multer.File,
-    provider: string,
+    provider: providerType,
   ): Promise<providerDataType[]> {
     const workbook: IWorkBook = read(excel.buffer);
     const sheetNames = Object.keys(workbook.Sheets);
