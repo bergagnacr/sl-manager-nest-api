@@ -26,10 +26,7 @@ export class ProductsController {
     @Param('provider')
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          //   new FileTypeValidator({ fileType: '.(xlsx)' }),
-          new MaxFileSizeValidator({ maxSize: 2048 * 2048 * 4 }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 2048 * 2048 * 4 })],
       }),
     )
     file: Express.Multer.File,
