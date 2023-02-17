@@ -33,6 +33,6 @@ export class ProductsController {
     file: Express.Multer.File,
     @Param('provider') provider: providerType,
   ) {
-    return this.productService.readExcelAndReturnObject(file, provider);
+    return this.productService.readExcel(file, provider);
   }
 }
