@@ -1,68 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { read, IWorkBook } from 'ts-xlsx';
-import { providerDataType, providerType } from './types';
-import { providersRows } from './config';
+import {
+  providerDataResponseType,
+  providerNameType,
+  SaveDataToJsonType,
+} from './types';
+
+import { processProviderDataFromExcel, saveDataToJson } from './helpers';
 
 @Injectable()
 export class ProductsService {
-  async readExcelAndReturnObject(
+  async readExcel(
     excel: Express.Multer.File,
-    provider: providerType,
-  ): Promise<providerDataType[]> {
-    const workbook: IWorkBook = read(excel.buffer);
-    const sheetNames = Object.keys(workbook.Sheets);
-    const dataFromSheet = workbook.Sheets[sheetNames[0]];
-    const cellNames = Object.keys(dataFromSheet);
-    const totalCell = dataFromSheet['!ref'].split(':')[1].substring(1);
-
-    const totalData: providerDataType[] = [];
-
-    const evaluateProvider = (provider) => {
-      return provider.includes('2') || provider.includes('3')
-        ? provider.substring(provider.length - 1, -1)
-        : provider;
-    };
-
-    const evaluateValue = (value) => {
-      return !value ? null : value;
-    };
-
-    cellNames.forEach((item, index) => {
-      if (
-        item !== '!ref' &&
-        item !== '!margins' &&
-        index >= providersRows[provider].initialRow &&
-        index <= totalCell
-      ) {
-        const code = evaluateValue(
-          dataFromSheet[
-            `${
-              providersRows[provider].rows[provider === 'artec' ? 1 : 0] + index
-            }`
-          ]?.v,
+    provider: providerNameType,
+  ): Promise<providerDataResponseType> {
+    try {
+      const data = await processProviderDataFromExcel(provider, excel);
+      if (data) {
+        const dataSaved: SaveDataToJsonType = await saveDataToJson(
+          provider,
+          data,
         );
-        const description = evaluateValue(
-          dataFromSheet[
-            `${
-              providersRows[provider].rows[provider === 'artec' ? 0 : 1] + index
-            }`
-          ]?.v,
-        );
-        const price = evaluateValue(
-          dataFromSheet[`${providersRows[provider].rows[2] + index}`]?.v,
-        );
-
-        code &&
-          price &&
-          totalData.push({
-            provider: evaluateProvider(provider),
-            code: code,
-            description,
-            price,
-          });
+        return {
+          file: excel.filename,
+          provider,
+          message: `file for provider ${provider}, has been processed, filename: ${dataSaved.filename}`,
+        };
       }
-    });
-
-    return totalData;
+    } catch (e) {
+      return {
+        file: excel.filename,
+        provider,
+        message: `file for provider ${provider}, could not being uploaded`,
+        error: e,
+      };
+    }
   }
 }

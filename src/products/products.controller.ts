@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
-import { providerType } from './types';
+import { providerNameType } from './types';
 
 @Controller('/products')
 export class ProductsController {
@@ -31,7 +31,7 @@ export class ProductsController {
       }),
     )
     file: Express.Multer.File,
-    @Param('provider') provider: providerType,
+    @Param('provider') provider: providerNameType,
   ) {
     return this.productService.readExcel(file, provider);
   }
