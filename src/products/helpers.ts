@@ -17,7 +17,7 @@ export const saveDataToJson = async (
   provider: providerNameType,
   providerData: providerType,
 ): Promise<SaveDataToJsonType> => {
-  const fileName = `src/data/${provider}-${Date.now()}.json`;
+  const fileName = `src/data/${provider}.json`;
   writeFile(fileName, JSON.stringify(providerData), (error) => {
     if (error) {
       console.log('error ocurred writting file', error);
