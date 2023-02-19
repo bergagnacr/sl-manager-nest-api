@@ -11,6 +11,9 @@ const common_1 = require("@nestjs/common");
 const products_controller_1 = require("./products/products.controller");
 const products_service_1 = require("./products/products.service");
 const logger_middleware_1 = require("./common/middleware/logger.middleware");
+const config_1 = require("@nestjs/config");
+const auth_module_1 = require("./auth/auth.module");
+const users_module_1 = require("./users/users.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(logger_middleware_1.LoggerMiddleware).forRoutes(products_controller_1.ProductsController);
@@ -18,6 +21,14 @@ let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            config_1.ConfigModule.forRoot({
+                envFilePath: '../.env',
+                isGlobal: true,
+            }),
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+        ],
         controllers: [products_controller_1.ProductsController],
         providers: [products_service_1.ProductsService],
     })

@@ -6,8 +6,8 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs18.x
-  region: us-east-1
+  runtime: nodejs14.x
+  region: ${opt:region,'us-east-1'}
   stage: ${opt:stage, 'local'}
   logs:
     restApi:
@@ -16,8 +16,8 @@ provider:
       format: '{"requestId": "$context.requestId", "ip": "$context.identity.sourceIp", "caller": "$context.identity.caller", "user": "$context.identity.user", "requestTime": "$context.requestTime", "httpMethod": "$context.httpMethod", "resourcePath": "$context.resourcePath", "status": "$context.status", "protocol": "$context.protocol", "responseLength": "$context.responseLength"}'
   memorySize: 2048 # optional, in MB, default is 1024
   environment:
-    STAGE: 'local'
-    REGION: 'us-east-1'
+    STAGE: ${opt:stage, 'local'}
+    REGION: ${opt:region, 'us-east-1'}
 
 functions:
   main:
@@ -26,10 +26,22 @@ functions:
       - http:
           method: get
           path: /products
-
+          cors: true
       - http:
           method: post
           path: /products/{provider}/upload
+
+      - http:
+          method: get
+          path: /users
+
+      - http:
+          method: post
+          path: /auth/register
+
+      - http:
+          method: post
+          path: /auth/login
 
 custom:
   serverless-offline:
