@@ -1,0 +1,30 @@
+service: sl-manager-nest-api
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  products:
+    handler: dist/main.handler
+    events:
+      - http:
+          method: products
+          path: /products
+      - http:
+          method: products
+          path: '{proxy+}'
+
+custom:
+  serverless-offline:
+    host: '0.0.0.0'
+    httpPort: 5002
+    lambdaPort: 5011
+  prune:
+    automatic: true
+    number: 5
+  optimize:
+    external: ['swagger-ui-dist']
