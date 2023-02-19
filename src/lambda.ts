@@ -34,13 +34,14 @@ export async function bootstrapServer(): Promise<Server> {
       transform: true,
     }),
   );
-  nestApp.setGlobalPrefix('sl_manager');
+  nestApp.setGlobalPrefix('api');
   await nestApp.init();
   server = createServer(expressApp, undefined);
   return server;
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
+  console.log(context);
   server = await bootstrapServer();
   return proxy(server, event, context, 'PROMISE').promise;
 };

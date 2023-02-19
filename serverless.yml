@@ -25,23 +25,27 @@ functions:
     events:
       - http:
           method: get
-          path: /products
+          path: /api
+      - http:
+          method: get
+          path: /api/products
           cors: true
+
       - http:
           method: post
-          path: /products/{provider}/upload
+          path: /api/products/{provider}/upload
 
       - http:
           method: get
-          path: /users
+          path: /api/users
 
       - http:
           method: post
-          path: /auth/register
+          path: /api/auth/register
 
       - http:
           method: post
-          path: /auth/login
+          path: /api/auth/login
 
 custom:
   serverless-offline:

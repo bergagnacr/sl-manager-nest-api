@@ -14,9 +14,14 @@ const logger_middleware_1 = require("./common/middleware/logger.middleware");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
+const app_controller_1 = require("./app.controller");
+const app_service_1 = require("./app.service");
+const auth_controller_1 = require("./auth/auth.controller");
 let AppModule = class AppModule {
     configure(consumer) {
-        consumer.apply(logger_middleware_1.LoggerMiddleware).forRoutes(products_controller_1.ProductsController);
+        consumer
+            .apply(logger_middleware_1.LoggerMiddleware)
+            .forRoutes(products_controller_1.ProductsController, app_controller_1.AppController, auth_controller_1.AuthController);
     }
 };
 AppModule = __decorate([
@@ -29,8 +34,8 @@ AppModule = __decorate([
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
         ],
-        controllers: [products_controller_1.ProductsController],
-        providers: [products_service_1.ProductsService],
+        controllers: [products_controller_1.ProductsController, app_controller_1.AppController],
+        providers: [products_service_1.ProductsService, app_service_1.AppService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

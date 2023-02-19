@@ -27,13 +27,14 @@ async function bootstrapServer() {
         disableErrorMessages: false,
         transform: true,
     }));
-    nestApp.setGlobalPrefix('sl_manager');
+    nestApp.setGlobalPrefix('api');
     await nestApp.init();
     server = (0, aws_serverless_express_1.createServer)(expressApp, undefined);
     return server;
 }
 exports.bootstrapServer = bootstrapServer;
 const handler = async (event, context) => {
+    console.log(context);
     server = await bootstrapServer();
     return (0, aws_serverless_express_1.proxy)(server, event, context, 'PROMISE').promise;
 };
