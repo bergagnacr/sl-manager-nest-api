@@ -18,6 +18,7 @@ let AuthService = class AuthService {
             UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID,
             ClientId: process.env.AWS_COGNITO_CLIENT_ID,
         });
+        console.log(this.userPool);
     }
     async registerUser(authRegisterUserDto) {
         const { name, email, password } = authRegisterUserDto;

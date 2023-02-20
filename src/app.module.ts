@@ -8,17 +8,18 @@ import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '../.env',
+      envFilePath: '.env',
       isGlobal: true,
     }),
     UsersModule,
     AuthModule,
   ],
-  controllers: [ProductsController, AppController],
+  controllers: [ProductsController, UsersController, AppController],
   providers: [ProductsService, AppService],
 })
 export class AppModule {

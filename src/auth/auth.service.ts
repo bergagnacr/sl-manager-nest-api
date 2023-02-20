@@ -5,8 +5,8 @@ import {
   CognitoUserAttribute,
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
-import { AuthLoginUserDto } from './dtos/authLoginUserDto';
-import { AuthRegisterUserDto } from './dtos/authRegisterUserDto';
+import { AuthLoginUserDto } from './dto/authLoginUserDto';
+import { AuthRegisterUserDto } from './dto/authRegisterUserDto';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +17,7 @@ export class AuthService {
       UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID,
       ClientId: process.env.AWS_COGNITO_CLIENT_ID,
     });
+    console.log(this.userPool);
   }
 
   async registerUser(authRegisterUserDto: AuthRegisterUserDto) {

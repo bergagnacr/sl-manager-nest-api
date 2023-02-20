@@ -26,26 +26,41 @@ functions:
       - http:
           method: get
           path: /api
+  products:
+    handler: src/lambda.handler
+    events:
       - http:
           method: get
           path: /api/products
           cors: true
-
+  productsUpload:
+    handler: src/lambda.handler
+    events:
       - http:
           method: post
           path: /api/products/{provider}/upload
-
+          cors: true
+  users:
+    handler: src/lambda.handler
+    events:
       - http:
           method: get
           path: /api/users
-
+          cors: true
+  authRegister:
+    handler: src/lambda.handler
+    events:
       - http:
           method: post
           path: /api/auth/register
-
+          cors: true
+  authLogin:
+    handler: src/lambda.handler
+    events:
       - http:
           method: post
           path: /api/auth/login
+          cors: true
 
 custom:
   serverless-offline:

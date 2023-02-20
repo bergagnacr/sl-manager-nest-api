@@ -1,5 +1,5 @@
-import { AuthLoginUserDto } from './dtos/authLoginUserDto';
-import { AuthRegisterUserDto } from './dtos/authRegisterUserDto';
+import { AuthLoginUserDto } from './dto/authLoginUserDto';
+import { AuthRegisterUserDto } from './dto/authRegisterUserDto';
 export declare class AuthService {
     private userPool;
     constructor();

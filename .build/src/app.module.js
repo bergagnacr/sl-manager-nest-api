@@ -17,6 +17,7 @@ const users_module_1 = require("./users/users.module");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_controller_1 = require("./auth/auth.controller");
+const users_controller_1 = require("./users/users.controller");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -28,13 +29,13 @@ AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                envFilePath: '../.env',
+                envFilePath: '.env',
                 isGlobal: true,
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
         ],
-        controllers: [products_controller_1.ProductsController, app_controller_1.AppController],
+        controllers: [products_controller_1.ProductsController, users_controller_1.UsersController, app_controller_1.AppController],
         providers: [products_service_1.ProductsService, app_service_1.AppService],
     })
 ], AppModule);
