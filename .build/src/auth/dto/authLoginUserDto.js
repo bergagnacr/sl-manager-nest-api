@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthLoginUserDto = void 0;
 const class_validator_1 = require("class-validator");
+const config_1 = require("./config");
 class AuthLoginUserDto {
 }
 __decorate([
@@ -18,7 +19,7 @@ __decorate([
     __metadata("design:type", String)
 ], AuthLoginUserDto.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.Matches)(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$&+,:;=?@#|'<>.^*()%!-])[A-Za-z\d@$&+,:;=?@#|'<>.^*()%!-]{8,}$/, { message: 'invalid password' }),
+    (0, class_validator_1.Matches)(config_1.MATCHING_PASS_REGEX, { message: 'invalid password' }),
     __metadata("design:type", String)
 ], AuthLoginUserDto.prototype, "password", void 0);
 exports.AuthLoginUserDto = AuthLoginUserDto;

@@ -47,6 +47,8 @@ functions:
           method: get
           path: /api/users
           cors: true
+
+  # Authorization endpoints (Cognito)
   authRegister:
     handler: src/lambda.handler
     events:
@@ -60,6 +62,27 @@ functions:
       - http:
           method: post
           path: /api/auth/login
+          cors: true
+  authChangePassword:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: post
+          path: /api/auth/change-password
+          cors: true
+  authForgotPassword:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: post
+          path: /api/auth/forgot-password
+          cors: true
+  authConfirmPassword:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: post
+          path: /api/auth/confirm-password
           cors: true
 
 custom:

@@ -5,6 +5,9 @@ import {
   CognitoUserAttribute,
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
+import { AuthChangePasswordUserDto } from './dto/authChangePasswordUserDto';
+import { AuthConfirmPasswordUserDto } from './dto/authConfirmPasswordUserDto';
+import { AuthForgotPasswordUserDto } from './dto/authForgotPasswordUserDto';
 import { AuthLoginUserDto } from './dto/authLoginUserDto';
 import { AuthRegisterUserDto } from './dto/authRegisterUserDto';
 
@@ -61,6 +64,93 @@ export class AuthService {
             accessToken: result.getAccessToken().getJwtToken(),
             refreshToken: result.getRefreshToken().getToken(),
           });
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async changeUserPassword(
+    authChangePasswordUserDto: AuthChangePasswordUserDto,
+  ) {
+    const { email, currentPassword, newPassword } = authChangePasswordUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const authenticationDetails = new AuthenticationDetails({
+      Username: email,
+      Password: currentPassword,
+    });
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.authenticateUser(authenticationDetails, {
+        onSuccess: () => {
+          userCognito.changePassword(
+            currentPassword,
+            newPassword,
+            (err, result) => {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(result);
+            },
+          );
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async forgotUserPassword(
+    authForgotPasswordUserDto: AuthForgotPasswordUserDto,
+  ) {
+    const { email } = authForgotPasswordUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.forgotPassword({
+        onSuccess: (result) => {
+          resolve(result);
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async confirmUserPassword(
+    authConfirmPasswordUserDto: AuthConfirmPasswordUserDto,
+  ) {
+    const { email, confirmationCode, newPassword } = authConfirmPasswordUserDto;
+
+    const userData = {
+      Username: email,
+      Pool: this.userPool,
+    };
+
+    const userCognito = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => {
+      userCognito.confirmPassword(confirmationCode, newPassword, {
+        onSuccess: () => {
+          resolve({ status: 'success' });
         },
         onFailure: (err) => {
           reject(err);

@@ -58,6 +58,70 @@ let AuthService = class AuthService {
             });
         });
     }
+    async changeUserPassword(authChangePasswordUserDto) {
+        const { email, currentPassword, newPassword } = authChangePasswordUserDto;
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+        const authenticationDetails = new amazon_cognito_identity_js_1.AuthenticationDetails({
+            Username: email,
+            Password: currentPassword,
+        });
+        const userCognito = new amazon_cognito_identity_js_1.CognitoUser(userData);
+        return new Promise((resolve, reject) => {
+            userCognito.authenticateUser(authenticationDetails, {
+                onSuccess: () => {
+                    userCognito.changePassword(currentPassword, newPassword, (err, result) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(result);
+                    });
+                },
+                onFailure: (err) => {
+                    reject(err);
+                },
+            });
+        });
+    }
+    async forgotUserPassword(authForgotPasswordUserDto) {
+        const { email } = authForgotPasswordUserDto;
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+        const userCognito = new amazon_cognito_identity_js_1.CognitoUser(userData);
+        return new Promise((resolve, reject) => {
+            userCognito.forgotPassword({
+                onSuccess: (result) => {
+                    resolve(result);
+                },
+                onFailure: (err) => {
+                    reject(err);
+                },
+            });
+        });
+    }
+    async confirmUserPassword(authConfirmPasswordUserDto) {
+        const { email, confirmationCode, newPassword } = authConfirmPasswordUserDto;
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+        const userCognito = new amazon_cognito_identity_js_1.CognitoUser(userData);
+        return new Promise((resolve, reject) => {
+            userCognito.confirmPassword(confirmationCode, newPassword, {
+                onSuccess: () => {
+                    resolve({ status: 'success' });
+                },
+                onFailure: (err) => {
+                    reject(err);
+                },
+            });
+        });
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),

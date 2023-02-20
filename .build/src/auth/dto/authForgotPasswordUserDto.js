@@ -9,22 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthRegisterUserDto = void 0;
+exports.AuthForgotPasswordUserDto = void 0;
 const class_validator_1 = require("class-validator");
-const config_1 = require("./config");
-class AuthRegisterUserDto {
+class AuthForgotPasswordUserDto {
 }
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], AuthRegisterUserDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
-], AuthRegisterUserDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.Matches)(config_1.MATCHING_PASS_REGEX, { message: 'invalid password' }),
-    __metadata("design:type", String)
-], AuthRegisterUserDto.prototype, "password", void 0);
-exports.AuthRegisterUserDto = AuthRegisterUserDto;
-//# sourceMappingURL=authRegisterUserDto.js.map
+], AuthForgotPasswordUserDto.prototype, "email", void 0);
+exports.AuthForgotPasswordUserDto = AuthForgotPasswordUserDto;
+//# sourceMappingURL=authForgotPasswordUserDto.js.map

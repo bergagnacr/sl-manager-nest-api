@@ -1,12 +1,10 @@
 import { IsEmail, Matches } from 'class-validator';
+import { MATCHING_PASS_REGEX } from './config';
 
 export class AuthLoginUserDto {
   @IsEmail()
   email: string;
 
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$&+,:;=?@#|'<>.^*()%!-])[A-Za-z\d@$&+,:;=?@#|'<>.^*()%!-]{8,}$/,
-    { message: 'invalid password' },
-  )
+  @Matches(MATCHING_PASS_REGEX, { message: 'invalid password' })
   password: string;
 }

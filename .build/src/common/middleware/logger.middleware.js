@@ -14,6 +14,7 @@ let LoggerMiddleware = LoggerMiddleware_1 = class LoggerMiddleware {
         this.logger = new common_1.Logger(LoggerMiddleware_1.name);
     }
     use(req, _res, next) {
+        this.logger.log(req);
         next();
     }
 };

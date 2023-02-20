@@ -11,7 +11,7 @@ export class LoggerMiddleware implements NestMiddleware {
     //     ? req.apiGateway.context.awsRequestId
     //     : 'Missing AWS request ID',
     // );
-    // this.logger.log(req);
+    this.logger.log(req);
     next();
   }
 }
