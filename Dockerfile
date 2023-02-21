@@ -1,10 +1,10 @@
-FROM node:18.8.0-alpine
+FROM node:14.17-alpine
 
-RUN mkdir -p /sl-manager-nest-api
-COPY . /sl-manager-nest-api
-COPY package*.json ./sl-manager-nest-api
-WORKDIR /sl-manager-nest-api
+RUN mkdir -p /sl-manager-api
+COPY . /sl-manager-api
+COPY package*.json ./sl-manager-api
+WORKDIR /sl-manager-api
 
-RUN npm install -g npm@8.18.0
-RUN npm run build
-RUN npm ci
+RUN npm install -g npm@8.3.0
+RUN npm install -g --unsafe-perm serverless@2
+RUN npm install

@@ -3,6 +3,7 @@ service: ls-manager-backend
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
+  - serverless-prune-plugin
 
 provider:
   name: aws
@@ -88,3 +89,8 @@ functions:
 custom:
   serverless-offline:
     noPrependStageInUrl: true
+    httpPort: 5002
+    # lambdaPort: 5011
+    prune:
+      automatic: true
+      number: 10
