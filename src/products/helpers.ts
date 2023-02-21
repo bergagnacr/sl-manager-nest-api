@@ -1,4 +1,4 @@
-import { IWorkBook, read } from 'ts-xlsx';
+import { IWorkBook, IWorkSheet, read } from 'ts-xlsx';
 import { providerNameType, providerType, SaveDataToJsonType } from './types';
 import { providersRows } from './config';
 import { writeFile } from 'fs';
@@ -18,13 +18,17 @@ export const saveDataToJson = async (
   providerData: providerType,
 ): Promise<SaveDataToJsonType> => {
   const fileName = `src/data/${provider}.json`;
-  writeFile(fileName, JSON.stringify(providerData), (error) => {
-    if (error) {
-      console.log('error ocurred writting file', error);
-      return;
-    }
-    console.log('data written successfully');
-  });
+  try {
+    writeFile(fileName, JSON.stringify(providerData), (error) => {
+      if (error) {
+        console.log('error ocurred writting file', error);
+        return;
+      }
+      console.log('data written successfully');
+    });
+  } catch (error) {
+    console.error(error);
+  }
   return { provider: evaluateProvider(provider), filename: fileName };
 };
 
@@ -32,10 +36,16 @@ export const processProviderDataFromExcel = async (
   provider: providerNameType,
   excel: Express.Multer.File,
 ): Promise<providerType> => {
-  const workbook: IWorkBook = read(excel.buffer);
-  const sheetNames = Object.keys(workbook.Sheets);
-  const dataFromSheet = workbook.Sheets[sheetNames[0]];
-  const cellNames = Object.keys(dataFromSheet);
+  let cellNames: string[];
+  let dataFromSheet: IWorkSheet;
+  try {
+    const workbook: IWorkBook = read(excel.buffer);
+    const sheetNames = Object.keys(workbook.Sheets);
+    dataFromSheet = workbook.Sheets[sheetNames[0]];
+    cellNames = Object.keys(dataFromSheet);
+  } catch (error) {
+    console.error(error);
+  }
   const totalCell = dataFromSheet['!ref'].split(':')[1].substring(1);
 
   const providerName: providerNameType = evaluateProvider(provider);

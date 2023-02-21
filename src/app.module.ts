@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { UsersController } from './users/users.controller';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -17,10 +18,11 @@ import { UsersController } from './users/users.controller';
       isGlobal: true,
     }),
     UsersModule,
+    ProductsModule,
     AuthModule,
   ],
   controllers: [ProductsController, UsersController, AppController],
-  providers: [ProductsService, AppService],
+  providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

@@ -14,21 +14,33 @@ const evaluateValue = (value) => {
 };
 const saveDataToJson = async (provider, providerData) => {
     const fileName = `src/data/${provider}.json`;
-    (0, fs_1.writeFile)(fileName, JSON.stringify(providerData), (error) => {
-        if (error) {
-            console.log('error ocurred writting file', error);
-            return;
-        }
-        console.log('data written successfully');
-    });
+    try {
+        (0, fs_1.writeFile)(fileName, JSON.stringify(providerData), (error) => {
+            if (error) {
+                console.log('error ocurred writting file', error);
+                return;
+            }
+            console.log('data written successfully');
+        });
+    }
+    catch (error) {
+        console.error(error);
+    }
     return { provider: evaluateProvider(provider), filename: fileName };
 };
 exports.saveDataToJson = saveDataToJson;
 const processProviderDataFromExcel = async (provider, excel) => {
-    const workbook = (0, ts_xlsx_1.read)(excel.buffer);
-    const sheetNames = Object.keys(workbook.Sheets);
-    const dataFromSheet = workbook.Sheets[sheetNames[0]];
-    const cellNames = Object.keys(dataFromSheet);
+    let cellNames;
+    let dataFromSheet;
+    try {
+        const workbook = (0, ts_xlsx_1.read)(excel.buffer);
+        const sheetNames = Object.keys(workbook.Sheets);
+        dataFromSheet = workbook.Sheets[sheetNames[0]];
+        cellNames = Object.keys(dataFromSheet);
+    }
+    catch (error) {
+        console.error(error);
+    }
     const totalCell = dataFromSheet['!ref'].split(':')[1].substring(1);
     const providerName = evaluateProvider(provider);
     const totalData = { provider: providerName, data: [] };

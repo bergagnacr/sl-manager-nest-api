@@ -8,7 +8,9 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { providerNameType } from './types';
@@ -21,6 +23,7 @@ export class ProductsController {
     return 'GetProducts';
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post(':provider/upload/')
   @UseInterceptors(FileInterceptor('file'))
   async uploadExcelFile(
@@ -33,6 +36,7 @@ export class ProductsController {
     file: Express.Multer.File,
     @Param('provider') provider: providerNameType,
   ) {
+    console.log(file, provider);
     return this.productService.readExcel(file, provider);
   }
 }

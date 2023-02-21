@@ -4,17 +4,33 @@ import { Server } from 'http';
 
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { eventContext } from 'aws-serverless-express/middleware';
 
 import { createServer, proxy } from 'aws-serverless-express';
 import { setupConfigurationValues } from './utils';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import aws4Interceptor from 'aws4-axios';
+import axios from 'axios';
 
-let server: Server;
+// NOTE: If you get ERR_CONTENT_DECODING_FAILED in your browser, this is likely
+// due to a compressed response (e.g. gzip) which has not been handled correctly
+// by aws-serverless-express and/or API Gateway. Add the necessary MIME types to
+// binaryMimeTypes below
+const binaryMimeTypes: string[] = [];
+
+let cachedServer: Server;
+const REGION = process.env.REGION || 'us-east-1';
+
+const interceptor = aws4Interceptor({
+  region: REGION,
+  service: 'es',
+});
+
+axios.interceptors.request.use(interceptor);
 
 export async function bootstrapServer(): Promise<Server> {
   await setupConfigurationValues();
-  console.log(process.env.REGION);
   const expressApp = express();
 
   const nestApp = await NestFactory.create(
@@ -24,6 +40,7 @@ export async function bootstrapServer(): Promise<Server> {
       logger: ['error', 'warn', 'debug', 'log'],
     },
   );
+  nestApp.use(eventContext());
   nestApp.enableCors();
   nestApp.useGlobalPipes(
     new ValidationPipe({
@@ -36,12 +53,11 @@ export async function bootstrapServer(): Promise<Server> {
   );
   nestApp.setGlobalPrefix('api');
   await nestApp.init();
-  server = createServer(expressApp, undefined);
-  return server;
+  cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
+  return cachedServer;
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  console.log(context);
-  server = await bootstrapServer();
-  return proxy(server, event, context, 'PROMISE').promise;
+  cachedServer = await bootstrapServer();
+  return proxy(cachedServer, event, context, 'PROMISE').promise;
 };

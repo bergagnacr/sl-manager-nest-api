@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
 const platform_express_1 = require("@nestjs/platform-express");
 const products_service_1 = require("./products.service");
 let ProductsController = class ProductsController {
@@ -24,6 +25,7 @@ let ProductsController = class ProductsController {
         return 'GetProducts';
     }
     async uploadExcelFile(file, provider) {
+        console.log(file, provider);
         return this.productService.readExcel(file, provider);
     }
 };
@@ -34,6 +36,7 @@ __decorate([
     __metadata("design:returntype", String)
 ], ProductsController.prototype, "getProducts", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Post)(':provider/upload/'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, common_1.Param)('provider')),

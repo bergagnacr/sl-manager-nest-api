@@ -7,18 +7,28 @@ exports.handler = exports.bootstrapServer = void 0;
 const express_1 = __importDefault(require("express"));
 const core_1 = require("@nestjs/core");
 const platform_express_1 = require("@nestjs/platform-express");
+const middleware_1 = require("aws-serverless-express/middleware");
 const aws_serverless_express_1 = require("aws-serverless-express");
 const utils_1 = require("./utils");
 const common_1 = require("@nestjs/common");
 const app_module_1 = require("./app.module");
-let server;
+const aws4_axios_1 = __importDefault(require("aws4-axios"));
+const axios_1 = __importDefault(require("axios"));
+const binaryMimeTypes = [];
+let cachedServer;
+const REGION = process.env.REGION || 'us-east-1';
+const interceptor = (0, aws4_axios_1.default)({
+    region: REGION,
+    service: 'es',
+});
+axios_1.default.interceptors.request.use(interceptor);
 async function bootstrapServer() {
     await (0, utils_1.setupConfigurationValues)();
-    console.log(process.env.REGION);
     const expressApp = (0, express_1.default)();
     const nestApp = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(expressApp), {
         logger: ['error', 'warn', 'debug', 'log'],
     });
+    nestApp.use((0, middleware_1.eventContext)());
     nestApp.enableCors();
     nestApp.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
@@ -29,14 +39,13 @@ async function bootstrapServer() {
     }));
     nestApp.setGlobalPrefix('api');
     await nestApp.init();
-    server = (0, aws_serverless_express_1.createServer)(expressApp, undefined);
-    return server;
+    cachedServer = (0, aws_serverless_express_1.createServer)(expressApp, undefined, binaryMimeTypes);
+    return cachedServer;
 }
 exports.bootstrapServer = bootstrapServer;
 const handler = async (event, context) => {
-    console.log(context);
-    server = await bootstrapServer();
-    return (0, aws_serverless_express_1.proxy)(server, event, context, 'PROMISE').promise;
+    cachedServer = await bootstrapServer();
+    return (0, aws_serverless_express_1.proxy)(cachedServer, event, context, 'PROMISE').promise;
 };
 exports.handler = handler;
 //# sourceMappingURL=lambda.js.map
