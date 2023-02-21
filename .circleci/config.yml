@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/nodejs14.x
 
-    working_directory: ~/repo
+    working_directory: ~/sl-manager-nest-api
 
     steps:
       - checkout
