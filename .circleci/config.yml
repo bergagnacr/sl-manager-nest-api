@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/nodejs14.x
+      - image: circleci/node:14.17-alpine
 
     working_directory: ~/sl-manager-nest-api
 
