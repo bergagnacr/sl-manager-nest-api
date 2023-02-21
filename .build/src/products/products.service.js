@@ -14,11 +14,10 @@ let ProductsService = class ProductsService {
         try {
             const data = await (0, helpers_1.processProviderDataFromExcel)(provider, excel);
             if (data) {
-                const dataSaved = await (0, helpers_1.saveDataToJson)(provider, data);
                 return {
                     file: excel.filename,
                     provider,
-                    message: `file for provider ${provider}, has been processed, filename: ${dataSaved.filename}`,
+                    data,
                 };
             }
         }
@@ -26,7 +25,7 @@ let ProductsService = class ProductsService {
             return {
                 file: excel.filename,
                 provider,
-                message: `file for provider ${provider}, could not being uploaded`,
+                data: { provider, data: undefined },
                 error: e,
             };
         }

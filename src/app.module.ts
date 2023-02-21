@@ -1,6 +1,5 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { ProductsController } from './products/products.controller';
-import { ProductsService } from './products/products.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';

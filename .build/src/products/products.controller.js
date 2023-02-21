@@ -25,7 +25,7 @@ let ProductsController = class ProductsController {
         return 'GetProducts';
     }
     async uploadExcelFile(file, provider) {
-        console.log(file, provider);
+        console.info(file, provider);
         return this.productService.readExcel(file, provider);
     }
 };

@@ -58,6 +58,15 @@ export async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
+  if (
+    event.body &&
+    event.headers['Content-Type'].includes('multipart/form-data')
+  ) {
+    // before => typeof event.body === string
+    event.body = Buffer.from(event.body, 'binary') as unknown as string;
+    // after => typeof event.body === <Buffer ...>
+  }
+
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };

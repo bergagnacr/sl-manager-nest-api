@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {
-  providerDataResponseType,
-  providerNameType,
-  SaveDataToJsonType,
-} from './types';
+import { providerDataResponseType, providerNameType } from './types';
 
-import { processProviderDataFromExcel, saveDataToJson } from './helpers';
+import { processProviderDataFromExcel } from './helpers';
 
 @Injectable()
 export class ProductsService {
@@ -16,21 +12,17 @@ export class ProductsService {
     try {
       const data = await processProviderDataFromExcel(provider, excel);
       if (data) {
-        const dataSaved: SaveDataToJsonType = await saveDataToJson(
-          provider,
-          data,
-        );
         return {
           file: excel.filename,
           provider,
-          message: `file for provider ${provider}, has been processed, filename: ${dataSaved.filename}`,
+          data,
         };
       }
     } catch (e) {
       return {
         file: excel.filename,
         provider,
-        message: `file for provider ${provider}, could not being uploaded`,
+        data: { provider, data: undefined },
         error: e,
       };
     }

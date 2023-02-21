@@ -44,6 +44,10 @@ async function bootstrapServer() {
 }
 exports.bootstrapServer = bootstrapServer;
 const handler = async (event, context) => {
+    if (event.body &&
+        event.headers['Content-Type'].includes('multipart/form-data')) {
+        event.body = Buffer.from(event.body, 'binary');
+    }
     cachedServer = await bootstrapServer();
     return (0, aws_serverless_express_1.proxy)(cachedServer, event, context, 'PROMISE').promise;
 };

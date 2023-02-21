@@ -36,7 +36,7 @@ export class ProductsController {
     file: Express.Multer.File,
     @Param('provider') provider: providerNameType,
   ) {
-    console.log(file, provider);
+    console.info(file, provider);
     return this.productService.readExcel(file, provider);
   }
 }

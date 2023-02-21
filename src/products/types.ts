@@ -20,7 +20,7 @@ export interface providerDataType {
 export interface providerDataResponseType {
   file: string;
   provider: string;
-  message: string;
+  data: providerType | undefined;
   error?: string;
 }
 
