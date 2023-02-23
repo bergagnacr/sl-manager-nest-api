@@ -13,7 +13,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
-import { providerNameType } from './types';
+import { providerNameType, totalDataResponseType } from './types';
 
 @Controller('/products')
 export class ProductsController {
@@ -24,9 +24,15 @@ export class ProductsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Get(':provider')
+  async getProductsByProvider(@Param('provider') provider: providerNameType) {
+    return this.productService.getProductByProvider(provider);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Post(':provider/upload/')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadExcelFile(
+  async insertProductsIntoDynamo(
     @Param('provider')
     @UploadedFile(
       new ParseFilePipe({
@@ -37,6 +43,8 @@ export class ProductsController {
     @Param('provider') provider: providerNameType,
   ) {
     console.info(file, provider);
-    return this.productService.readExcel(file, provider);
+    const data: totalDataResponseType =
+      await this.productService.uploadListToDataBase(file, provider);
+    return data;
   }
 }

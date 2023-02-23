@@ -6,25 +6,23 @@ export type providerNameType =
   | 'newplenty'
   | 'easa';
 
-export interface providerType {
-  provider: providerNameType;
-  data: providerDataType[];
-}
-
-export interface providerDataType {
-  code: string | null;
-  description: string | '';
-  price: number | null;
-}
-
-export interface providerDataResponseType {
-  file: string;
-  provider: string;
-  data: providerType | undefined;
+export interface totalDataResponseType {
+  fileName: string;
+  providerName: string;
+  // data: productDataType[];
+  data: any;
   error?: string;
 }
 
-export interface SaveDataToJsonType {
-  provider: string;
-  filename: string;
+// export interface totalDataParsedType {
+//   fileName: string;
+//   providerName: string;
+//   data: parsedDataType[];
+//   error?: string;
+// }
+export interface productDataType {
+  itemCode: string;
+  itemDescription: string | '';
+  itemPrice: number | null;
+  itemProvider: string;
 }

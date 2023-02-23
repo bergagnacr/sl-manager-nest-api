@@ -1,9 +1,10 @@
 /// <reference types="multer" />
 import { ProductsService } from './products.service';
-import { providerNameType } from './types';
+import { providerNameType, totalDataResponseType } from './types';
 export declare class ProductsController {
     private readonly productService;
     constructor(productService: ProductsService);
     getProducts(): string;
-    uploadExcelFile(file: Express.Multer.File, provider: providerNameType): Promise<import("./types").providerDataResponseType>;
+    getProductsByProvider(provider: providerNameType): Promise<import("aws-sdk/clients/dynamodb").DocumentClient.ItemList>;
+    insertProductsIntoDynamo(file: Express.Multer.File, provider: providerNameType): Promise<totalDataResponseType>;
 }

@@ -1,28 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { providerDataResponseType, providerNameType } from './types';
-
+import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  providerNameType,
+  totalDataResponseType,
+  productDataType,
+} from './types';
 import { processProviderDataFromExcel } from './helpers';
 
 @Injectable()
 export class ProductsService {
-  async readExcel(
+  async getProductByProvider(provider: string) {
+    return provider;
+  }
+
+  async uploadListToDataBase(
     excel: Express.Multer.File,
     provider: providerNameType,
-  ): Promise<providerDataResponseType> {
+  ): Promise<totalDataResponseType> {
     try {
-      const data = await processProviderDataFromExcel(provider, excel);
-      if (data) {
-        return {
-          file: excel.filename,
-          provider,
-          data,
-        };
-      }
-    } catch (e) {
-      return {
-        file: excel.filename,
+      const totalData: productDataType[] = await processProviderDataFromExcel(
         provider,
-        data: { provider, data: undefined },
+        excel,
+      );
+      return {
+        fileName: excel.filename,
+        providerName: provider,
+        data: totalData,
+      };
+    } catch (e) {
+      console.error(e);
+      return {
+        fileName: excel.filename,
+        providerName: provider,
+        data: undefined,
         error: e,
       };
     }

@@ -24,9 +24,13 @@ let ProductsController = class ProductsController {
     getProducts() {
         return 'GetProducts';
     }
-    async uploadExcelFile(file, provider) {
+    async getProductsByProvider(provider) {
+        return this.productService.getProductByProvider(provider);
+    }
+    async insertProductsIntoDynamo(file, provider) {
         console.info(file, provider);
-        return this.productService.readExcel(file, provider);
+        const data = await this.productService.readExcel(file, provider);
+        return data;
     }
 };
 __decorate([
@@ -35,6 +39,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", String)
 ], ProductsController.prototype, "getProducts", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)(':provider'),
+    __param(0, (0, common_1.Param)('provider')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductsController.prototype, "getProductsByProvider", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Post)(':provider/upload/'),
@@ -47,7 +59,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
-], ProductsController.prototype, "uploadExcelFile", null);
+], ProductsController.prototype, "insertProductsIntoDynamo", null);
 ProductsController = __decorate([
     (0, common_1.Controller)('/products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])

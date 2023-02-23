@@ -1,7 +1,11 @@
 import { IWorkBook, IWorkSheet, read } from 'ts-xlsx';
-import { providerNameType, providerType, SaveDataToJsonType } from './types';
+import {
+  productDataType,
+  providerNameType,
+  totalDataResponseType,
+} from './types';
 import { providersRows } from './config';
-import { writeFile } from 'fs';
+import { v4 as uuidV4 } from 'uuid';
 
 const evaluateProvider = (provider): providerNameType => {
   return provider.includes('2') || provider.includes('3')
@@ -13,29 +17,10 @@ const evaluateValue = (value): any | null => {
   return !value ? null : value;
 };
 
-export const saveDataToJson = async (
-  provider: providerNameType,
-  providerData: providerType,
-): Promise<SaveDataToJsonType> => {
-  const fileName = `src/data/${provider}.json`;
-  try {
-    writeFile(fileName, JSON.stringify(providerData), (error) => {
-      if (error) {
-        console.log('error ocurred writting file', error);
-        return;
-      }
-      console.log('data written successfully');
-    });
-  } catch (error) {
-    console.error(error);
-  }
-  return { provider: evaluateProvider(provider), filename: fileName };
-};
-
 export const processProviderDataFromExcel = async (
   provider: providerNameType,
   excel: Express.Multer.File,
-): Promise<providerType> => {
+): Promise<productDataType[]> => {
   let cellNames: string[];
   let dataFromSheet: IWorkSheet;
   try {
@@ -49,7 +34,11 @@ export const processProviderDataFromExcel = async (
   const totalCell = dataFromSheet['!ref'].split(':')[1].substring(1);
 
   const providerName: providerNameType = evaluateProvider(provider);
-  const totalData: providerType = { provider: providerName, data: [] };
+  const totalData: totalDataResponseType = {
+    fileName: excel.originalname,
+    providerName: provider,
+    data: [],
+  };
   cellNames.forEach((item, index) => {
     if (
       item !== '!ref' &&
@@ -77,13 +66,14 @@ export const processProviderDataFromExcel = async (
         ).toFixed(2),
       );
       totalData.data.push({
-        code: code,
-        description: description,
-        price: price,
+        itemCode: code.trim().toString(),
+        itemDescription: description,
+        itemPrice: price,
+        itemProvider: providerName,
       });
     } else {
       return { provider: providerName, data: [{}] };
     }
   });
-  return totalData;
+  return totalData.data;
 };
