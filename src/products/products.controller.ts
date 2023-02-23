@@ -23,13 +23,13 @@ export class ProductsController {
     return 'GetProducts';
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Get(':provider')
   async getProductsByProvider(@Param('provider') provider: providerNameType) {
     return this.productService.getProductByProvider(provider);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post(':provider/upload/')
   @UseInterceptors(FileInterceptor('file'))
   async insertProductsIntoDynamo(
