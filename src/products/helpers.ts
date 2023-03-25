@@ -5,7 +5,6 @@ import {
   totalDataResponseType,
 } from './types';
 import { providersRows } from './config';
-import { v4 as uuidV4 } from 'uuid';
 
 const evaluateProvider = (provider): providerNameType => {
   return provider.includes('2') || provider.includes('3')
@@ -13,8 +12,29 @@ const evaluateProvider = (provider): providerNameType => {
     : provider;
 };
 
-const evaluateValue = (value): any | null => {
+const evaluateValue = (value): string | null => {
   return !value ? null : value;
+};
+const validateObject = (
+  code: string,
+  description: string,
+  price: string,
+  providerName: providerNameType,
+): productDataType | null => {
+  if (!code) return;
+  const sanitizedCode = code.trim().toString();
+  if (sanitizedCode && price) {
+    const sanitizedDescription = description.replace(' ', '');
+    const sanitizedPrice = price ? Number(price) : 0;
+    return {
+      productCode: sanitizedCode,
+      productDescription: sanitizedDescription,
+      productPrice: sanitizedPrice,
+      productProvider: providerName,
+    };
+  } else {
+    return;
+  }
 };
 
 export const processProviderDataFromExcel = async (
@@ -39,6 +59,7 @@ export const processProviderDataFromExcel = async (
     providerName: provider,
     data: [],
   };
+  let validatedObject;
   cellNames.forEach((item, index) => {
     if (
       item !== '!ref' &&
@@ -61,16 +82,10 @@ export const processProviderDataFromExcel = async (
         ]?.v.toString(),
       );
       const price = evaluateValue(
-        Number(
-          dataFromSheet[`${providersRows[provider].rows[2] + index}`]?.v,
-        ).toFixed(2),
+        dataFromSheet[`${providersRows[provider].rows[2] + index}`]?.v,
       );
-      totalData.data.push({
-        itemCode: code.trim().toString(),
-        itemDescription: description,
-        itemPrice: price,
-        itemProvider: providerName,
-      });
+      validatedObject = validateObject(code, description, price, providerName);
+      totalData.data.push(validatedObject);
     } else {
       return { provider: providerName, data: [{}] };
     }

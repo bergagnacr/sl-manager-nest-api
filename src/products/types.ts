@@ -1,6 +1,5 @@
 export type providerNameType =
-  | 'montenegro2'
-  | 'montenegro3'
+  | 'montenegro'
   | 'artec'
   | 'tolken'
   | 'newplenty'
@@ -9,8 +8,7 @@ export type providerNameType =
 export interface totalDataResponseType {
   fileName: string;
   providerName: string;
-  // data: productDataType[];
-  data: any;
+  data: productDataType[];
   error?: string;
 }
 
@@ -21,8 +19,8 @@ export interface totalDataResponseType {
 //   error?: string;
 // }
 export interface productDataType {
-  itemCode: string;
-  itemDescription: string | '';
-  itemPrice: number | null;
-  itemProvider: string;
+  productCode: string;
+  productDescription: string | '';
+  productPrice: number | null;
+  productProvider: string;
 }
