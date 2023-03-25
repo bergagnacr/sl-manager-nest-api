@@ -1,15 +1,28 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   providerNameType,
   totalDataResponseType,
   productDataType,
 } from './types';
 import { processProviderDataFromExcel } from './helpers';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Products } from './products.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
-  async getProductByProvider(provider: string) {
-    return provider;
+  constructor(
+    @InjectRepository(Products) private productRepository: Repository<Products>,
+  ) {}
+
+  async getProductByProvider(provider: providerNameType) {
+    return await this.productRepository.findOneBy({
+      productProvider: provider,
+    });
+  }
+
+  async findAll(): Promise<Products[]> {
+    return await this.productRepository.find();
   }
 
   async uploadListToDataBase(
