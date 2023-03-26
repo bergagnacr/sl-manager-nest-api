@@ -11,6 +11,24 @@ const evaluateProvider = (provider) => {
 const evaluateValue = (value) => {
     return !value ? null : value;
 };
+const validateObject = (code, description, price, providerName) => {
+    if (!code)
+        return;
+    const sanitizedCode = code.trim().toString();
+    if (sanitizedCode && price) {
+        const sanitizedDescription = description.replace(' ', '');
+        const sanitizedPrice = price ? Number(price) : 0;
+        return {
+            productCode: sanitizedCode,
+            productDescription: sanitizedDescription,
+            productPrice: sanitizedPrice,
+            productProvider: providerName,
+        };
+    }
+    else {
+        return;
+    }
+};
 const processProviderDataFromExcel = async (provider, excel) => {
     let cellNames;
     let dataFromSheet;
@@ -30,6 +48,7 @@ const processProviderDataFromExcel = async (provider, excel) => {
         providerName: provider,
         data: [],
     };
+    let validatedObject;
     cellNames.forEach((item, index) => {
         var _a, _b, _c;
         if (item !== '!ref' &&
@@ -38,13 +57,9 @@ const processProviderDataFromExcel = async (provider, excel) => {
             index <= totalCell) {
             const code = evaluateValue((_a = dataFromSheet[`${config_1.providersRows[provider].rows[provider === 'artec' ? 1 : 0] + index}`]) === null || _a === void 0 ? void 0 : _a.v.toString());
             const description = evaluateValue((_b = dataFromSheet[`${config_1.providersRows[provider].rows[provider === 'artec' ? 0 : 1] + index}`]) === null || _b === void 0 ? void 0 : _b.v.toString());
-            const price = evaluateValue(Number((_c = dataFromSheet[`${config_1.providersRows[provider].rows[2] + index}`]) === null || _c === void 0 ? void 0 : _c.v).toFixed(2));
-            totalData.data.push({
-                itemCode: code.trim().toString(),
-                itemDescription: description,
-                itemPrice: price,
-                itemProvider: providerName,
-            });
+            const price = evaluateValue((_c = dataFromSheet[`${config_1.providersRows[provider].rows[2] + index}`]) === null || _c === void 0 ? void 0 : _c.v);
+            validatedObject = validateObject(code, description, price, providerName);
+            totalData.data.push(validatedObject);
         }
         else {
             return { provider: providerName, data: [{}] };

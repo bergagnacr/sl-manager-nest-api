@@ -8,21 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
 const products_controller_1 = require("./products/products.controller");
 const logger_middleware_1 = require("./common/middleware/logger.middleware");
 const config_1 = require("@nestjs/config");
-const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
-const auth_controller_1 = require("./auth/auth.controller");
 const users_controller_1 = require("./users/users.controller");
 const products_module_1 = require("./products/products.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
             .apply(logger_middleware_1.LoggerMiddleware)
-            .forRoutes(products_controller_1.ProductsController, app_controller_1.AppController, auth_controller_1.AuthController);
+            .forRoutes(products_controller_1.ProductsController, users_controller_1.UsersController, app_controller_1.AppController);
     }
 };
 AppModule = __decorate([
@@ -32,12 +30,24 @@ AppModule = __decorate([
                 envFilePath: '.env',
                 isGlobal: true,
             }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: (configService) => ({
+                    type: 'postgres',
+                    host: configService.get('DB_HOST'),
+                    port: +configService.get('DB_PORT'),
+                    username: configService.get('DB_USERNAME'),
+                    password: configService.get('DB_PASSWORD'),
+                    database: configService.get('DB_NAME'),
+                    synchronize: true,
+                    entities: [],
+                    autoLoadEntities: true,
+                }),
+                inject: [config_1.ConfigService],
+            }),
             users_module_1.UsersModule,
             products_module_1.ProductsModule,
-            auth_module_1.AuthModule,
         ],
-        controllers: [products_controller_1.ProductsController, users_controller_1.UsersController, app_controller_1.AppController],
-        providers: [app_service_1.AppService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

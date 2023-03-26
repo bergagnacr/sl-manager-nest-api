@@ -1,12 +1,11 @@
 /// <reference types="multer" />
 import { providerNameType, totalDataResponseType } from './types';
-import * as AWS from 'aws-sdk';
+import { Products } from './products.entity';
+import { Repository } from 'typeorm';
 export declare class ProductsService {
-    private readonly PRODUCTS_TABLE_NAME;
-    private readonly REGION;
-    private readonly STAGE;
-    private readonly CONFIG;
-    private readonly dynamoDb;
-    getProductByProvider(provider: string): Promise<AWS.DynamoDB.DocumentClient.ItemList>;
-    readExcel(excel: Express.Multer.File, provider: providerNameType): Promise<totalDataResponseType>;
+    private productRepository;
+    constructor(productRepository: Repository<Products>);
+    getProductByProvider(provider: providerNameType): Promise<Products>;
+    findAll(): Promise<Products[]>;
+    uploadListToDataBase(excel: Express.Multer.File, provider: providerNameType): Promise<totalDataResponseType>;
 }

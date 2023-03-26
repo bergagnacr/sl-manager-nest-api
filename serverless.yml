@@ -1,4 +1,4 @@
-service: ls-manager-backend
+service: sl-manager-api
 
 plugins:
   - serverless-offline
@@ -15,7 +15,7 @@ provider:
       accessLogging: true
       executionLogging: false
       format: '{"requestId": "$context.requestId", "ip": "$context.identity.sourceIp", "caller": "$context.identity.caller", "user": "$context.identity.user", "requestTime": "$context.requestTime", "httpMethod": "$context.httpMethod", "resourcePath": "$context.resourcePath", "status": "$context.status", "protocol": "$context.protocol", "responseLength": "$context.responseLength"}'
-  memorySize: 2048 # optional, in MB, default is 1024
+  memorySize: 1024 # optional, in MB, default is 1024
   environment:
     STAGE: ${opt:stage, 'local'}
     REGION: ${opt:region, 'us-east-1'}
@@ -54,43 +54,6 @@ functions:
       - http:
           method: get
           path: /api/users
-          cors: true
-
-  # Authorization endpoints (Cognito)
-  authRegister:
-    handler: src/lambda.handler
-    events:
-      - http:
-          method: post
-          path: /api/auth/register
-          cors: true
-  authLogin:
-    handler: src/lambda.handler
-    events:
-      - http:
-          method: post
-          path: /api/auth/login
-          cors: true
-  authChangePassword:
-    handler: src/lambda.handler
-    events:
-      - http:
-          method: post
-          path: /api/auth/change-password
-          cors: true
-  authForgotPassword:
-    handler: src/lambda.handler
-    events:
-      - http:
-          method: post
-          path: /api/auth/forgot-password
-          cors: true
-  authConfirmPassword:
-    handler: src/lambda.handler
-    events:
-      - http:
-          method: post
-          path: /api/auth/confirm-password
           cors: true
 
 custom:

@@ -5,6 +5,6 @@ export declare class ProductsController {
     private readonly productService;
     constructor(productService: ProductsService);
     getProducts(): string;
-    getProductsByProvider(provider: providerNameType): Promise<import("aws-sdk/clients/dynamodb").DocumentClient.ItemList>;
+    getProductsByProvider(provider: providerNameType): Promise<import("./products.entity").Products>;
     insertProductsIntoDynamo(file: Express.Multer.File, provider: providerNameType): Promise<totalDataResponseType>;
 }
